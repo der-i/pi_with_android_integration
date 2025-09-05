@@ -1,0 +1,2 @@
+# pi_with_android_integration
+The repository was created for teaching in PNRPU on the subject "Programming of mobile devices and embedded systems"
