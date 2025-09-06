@@ -1,51 +1,49 @@
-# pi_with_android_integration
-The repository was created for teaching in PNRPU on the subject "Programming of mobile devices and embedded systems"
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba, 
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
-Aboba, Aboba, Aboba, Aboba, Aboba, Aboba,
+# Система мониторинга температуры и влажности
+
+## Описание проекта
+Система состоит из двух частей:
+- **Raspberry Pi** с датчиком DHT22 для сбора данных о температуре и влажности
+- **Android приложение** для отображения данных и управления системой
+
+Система позволяет в реальном времени отслеживать показатели микроклимата и получать уведомления при критических значениях.
+
+## Архитектура системы
+```
+[Датчик DHT22] → [Raspberry Pi] → [Flask REST API] → [Android App]
+```
+
+## Требования
+
+### Аппаратная часть
+- Raspberry Pi 3/4 с Raspbian OS
+- Датчик температуры и влажности DHT22 (AM2302)
+- Резистор 10kΩ (pull-up для датчика)
+- Макетная плата и соединительные провода
+- Wi-Fi подключение
+
+### Программная часть
+- Python 3.7+ на Raspberry Pi
+- Android Studio
+- Java 8+ для Android разработки
+- Минимальная версия Android: API 21 (Android 5.0)
+
+## Функции Android приложения
+
+### Основные экраны
+- **Главный экран**: Отображение текущих показаний с графиками
+- **История**: Просмотр исторических данных
+- **Настройки**: Установка пороговых значений и интервалов
+
+### Основные функции
+- ✅ Отображение текущей температуры и влажности
+- ✅ Графики изменения показаний во времени
+- ✅ Push-уведомления при критических значениях
+- ✅ Сохранение данных в локальную базу SQLite
+- ✅ Настройка пороговых значений
+- ✅ Автоматическое обновление данных
+
+## Авторы
+- Студент группы РИС-22-1б: Деревнин Илья Вячеславович (derevnin05@gmail.com)
+- Студент группы РИС-22-1б: Мерзляков Владимир Николаевич (rinolono978@gmail.com)
+- Преподаватель: Курушин Даниил Сергеевич
+- Дата начала разработки: 06.09.2025
