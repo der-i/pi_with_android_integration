@@ -1,3 +1,17 @@
 venv/
 __pycache__/
 .idea/
+TeplicaApp/*.iml
+TeplicaApp/.gradle
+TeplicaApp/local.properties
+TeplicaApp/.idea/caches
+TeplicaApp/.idea/libraries
+TeplicaApp/.idea/modules.xml
+TeplicaApp/.idea/workspace.xml
+TeplicaApp/.idea/navEditor.xml
+TeplicaApp/.idea/assetWizardSettings.xml
+TeplicaApp.DS_Store
+TeplicaApp/build
+TeplicaApp/captures
+TeplicaApp/.externalNativeBuild
+TeplicaApp/.cxx
