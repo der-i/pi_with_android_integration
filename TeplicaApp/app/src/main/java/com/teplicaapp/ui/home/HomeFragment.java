@@ -1,17 +1,23 @@
 package com.teplicaapp.ui.home;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.teplicaapp.R;
+import com.teplicaapp.data.local.AppPreferences;
 import com.teplicaapp.data.model.ConnectionStatus;
 import com.teplicaapp.data.model.Resource;
 import com.teplicaapp.data.model.SensorData;
@@ -43,6 +49,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         
         setupSwipeRefresh();
+        setupMenu();
         observeViewModel();
         
         return binding.getRoot();
@@ -73,6 +80,55 @@ public class HomeFragment extends Fragment {
                 R.color.teal_200
         );
         binding.swipeRefresh.setOnRefreshListener(() -> viewModel.refreshData());
+    }
+    
+    private void setupMenu() {
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menu_home, menu);
+            }
+            
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == R.id.action_toggle_auto_refresh) {
+                    viewModel.toggleAutoRefresh();
+                    return true;
+                } else if (id == R.id.action_refresh_interval) {
+                    showIntervalDialog();
+                    return true;
+                }
+                return false;
+            }
+            
+            @Override
+            public void onPrepareMenu(@NonNull Menu menu) {
+                MenuItem autoRefreshItem = menu.findItem(R.id.action_toggle_auto_refresh);
+                if (autoRefreshItem != null) {
+                    boolean enabled = Boolean.TRUE.equals(viewModel.getIsAutoRefreshEnabled().getValue());
+                    autoRefreshItem.setTitle(enabled ? R.string.action_disable_auto_refresh : R.string.action_enable_auto_refresh);
+                }
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+    
+    private void showIntervalDialog() {
+        AppPreferences prefs = AppPreferences.getInstance(requireContext());
+        int currentIndex = prefs.getCurrentIntervalIndex();
+        
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.dialog_interval_title)
+                .setSingleChoiceItems(
+                        AppPreferences.getIntervalNames(),
+                        currentIndex,
+                        (dialog, which) -> {
+                            long[] intervals = AppPreferences.getAvailableIntervals();
+                            viewModel.setRefreshInterval(intervals[which]);
+                            dialog.dismiss();
+                        })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
     }
 
     private void observeViewModel() {

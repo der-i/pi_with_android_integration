@@ -1,13 +1,16 @@
 package com.teplicaapp.ui.home;
 
+import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+import com.teplicaapp.data.local.AppPreferences;
 import com.teplicaapp.data.model.ConnectionStatus;
 import com.teplicaapp.data.model.Resource;
 import com.teplicaapp.data.model.SensorData;
@@ -16,24 +19,29 @@ import com.teplicaapp.data.repository.SensorRepository;
 /**
  * ViewModel для главного экрана с показаниями датчика.
  */
-public class HomeViewModel extends ViewModel {
-    
-    private static final long DEFAULT_REFRESH_INTERVAL = 5000; // 5 секунд
+public class HomeViewModel extends AndroidViewModel {
     
     private final SensorRepository repository;
+    private final AppPreferences preferences;
     private final MediatorLiveData<Resource<SensorData>> sensorData;
     private final MutableLiveData<ConnectionStatus> connectionStatus;
     private final MutableLiveData<Boolean> isAutoRefreshEnabled;
+    private final MutableLiveData<Long> refreshInterval;
     
     private final Handler refreshHandler;
     private Runnable refreshRunnable;
-    private long refreshInterval = DEFAULT_REFRESH_INTERVAL;
     
-    public HomeViewModel() {
+    public HomeViewModel(@NonNull Application application) {
+        super(application);
+        
         repository = SensorRepository.getInstance();
+        preferences = AppPreferences.getInstance(application);
+        
         sensorData = new MediatorLiveData<>();
         connectionStatus = new MutableLiveData<>(ConnectionStatus.DISCONNECTED);
-        isAutoRefreshEnabled = new MutableLiveData<>(false);
+        isAutoRefreshEnabled = new MutableLiveData<>(preferences.isAutoRefreshEnabled());
+        refreshInterval = new MutableLiveData<>(preferences.getRefreshInterval());
+        
         refreshHandler = new Handler(Looper.getMainLooper());
         
         setupRefreshRunnable();
@@ -45,7 +53,10 @@ public class HomeViewModel extends ViewModel {
             public void run() {
                 if (Boolean.TRUE.equals(isAutoRefreshEnabled.getValue())) {
                     refreshData();
-                    refreshHandler.postDelayed(this, refreshInterval);
+                    Long interval = refreshInterval.getValue();
+                    if (interval != null) {
+                        refreshHandler.postDelayed(this, interval);
+                    }
                 }
             }
         };
@@ -73,6 +84,13 @@ public class HomeViewModel extends ViewModel {
     }
     
     /**
+     * Получить LiveData с интервалом обновления
+     */
+    public LiveData<Long> getRefreshInterval() {
+        return refreshInterval;
+    }
+    
+    /**
      * Запросить свежие данные с сервера
      */
     public void refreshData() {
@@ -83,7 +101,6 @@ public class HomeViewModel extends ViewModel {
             sensorData.setValue(resource);
             sensorData.removeSource(source);
             
-            // Обновляем статус соединения
             if (resource.isSuccess()) {
                 connectionStatus.setValue(ConnectionStatus.CONNECTED);
             } else if (resource.isError()) {
@@ -96,30 +113,45 @@ public class HomeViewModel extends ViewModel {
      * Включить автообновление данных
      */
     public void startAutoRefresh() {
-        isAutoRefreshEnabled.setValue(true);
-        refreshHandler.post(refreshRunnable);
+        if (Boolean.TRUE.equals(isAutoRefreshEnabled.getValue())) {
+            refreshHandler.post(refreshRunnable);
+        }
     }
     
     /**
      * Остановить автообновление
      */
     public void stopAutoRefresh() {
-        isAutoRefreshEnabled.setValue(false);
         refreshHandler.removeCallbacks(refreshRunnable);
+    }
+    
+    /**
+     * Переключить автообновление
+     */
+    public void toggleAutoRefresh() {
+        boolean newState = !Boolean.TRUE.equals(isAutoRefreshEnabled.getValue());
+        isAutoRefreshEnabled.setValue(newState);
+        preferences.setAutoRefreshEnabled(newState);
+        
+        if (newState) {
+            refreshHandler.post(refreshRunnable);
+        } else {
+            refreshHandler.removeCallbacks(refreshRunnable);
+        }
     }
     
     /**
      * Установить интервал автообновления
      */
     public void setRefreshInterval(long intervalMillis) {
-        this.refreshInterval = intervalMillis;
-    }
-    
-    /**
-     * Получить текущий интервал обновления
-     */
-    public long getRefreshInterval() {
-        return refreshInterval;
+        refreshInterval.setValue(intervalMillis);
+        preferences.setRefreshInterval(intervalMillis);
+        
+        // Перезапуск с новым интервалом
+        if (Boolean.TRUE.equals(isAutoRefreshEnabled.getValue())) {
+            stopAutoRefresh();
+            startAutoRefresh();
+        }
     }
     
     @Override

@@ -17,4 +17,13 @@
     <string name="last_update_format">Обновлено: %s</string>
     <string name="hint_swipe_refresh">Потяните вниз для обновления</string>
     <string name="warning_invalid_data">Данные вне допустимого диапазона</string>
+    
+    <!-- Menu actions -->
+    <string name="action_enable_auto_refresh">Включить автообновление</string>
+    <string name="action_disable_auto_refresh">Выключить автообновление</string>
+    <string name="action_refresh_interval">Интервал обновления</string>
+    
+    <!-- Dialogs -->
+    <string name="dialog_interval_title">Выберите интервал</string>
+    <string name="cancel">Отмена</string>
 </resources>
