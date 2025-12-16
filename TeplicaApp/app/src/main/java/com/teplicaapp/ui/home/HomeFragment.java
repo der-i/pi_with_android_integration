@@ -8,6 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -159,16 +161,25 @@ public class HomeFragment extends Fragment {
     }
 
     private void showData(SensorData data) {
+        // Анимация обновления данных
+        Animation pulseAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.pulse);
+
         binding.textTemperature.setText(data.getFormattedTemperature());
+        binding.textTemperature.startAnimation(pulseAnim);
+
         binding.textHumidity.setText(data.getFormattedHumidity());
+        binding.textHumidity.startAnimation(pulseAnim);
+
         binding.textLastUpdate.setText(
                 getString(R.string.last_update_format, timeFormat.format(new Date(data.getTimestamp())))
         );
-        
+
         // Валидация данных
         if (!data.isValid()) {
             binding.textWarning.setVisibility(View.VISIBLE);
             binding.textWarning.setText(R.string.warning_invalid_data);
+            Animation fadeIn = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in);
+            binding.textWarning.startAnimation(fadeIn);
         } else {
             binding.textWarning.setVisibility(View.GONE);
         }
@@ -178,6 +189,10 @@ public class HomeFragment extends Fragment {
         binding.textError.setVisibility(View.VISIBLE);
         String fullMessage = message + "\n" + getString(R.string.hint_tap_to_retry);
         binding.textError.setText(fullMessage);
+
+        // Анимация появления ошибки
+        Animation fadeIn = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in);
+        binding.textError.startAnimation(fadeIn);
 
         // Добавляем возможность повторить запрос по клику на сообщение об ошибке
         binding.textError.setOnClickListener(v -> {
@@ -191,8 +206,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateConnectionStatus(ConnectionStatus status) {
-        binding.textConnectionStatus.setText(status.getDisplayName());
-        
+        binding.textConnectionStatus.setText(status.getDisplayName().toUpperCase());
+
         int colorRes;
         switch (status) {
             case CONNECTED:

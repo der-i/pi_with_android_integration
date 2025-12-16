@@ -17,7 +17,7 @@
     <string name="last_update_format">Обновлено: %s</string>
     <string name="hint_swipe_refresh">Потяните вниз для обновления</string>
     <string name="hint_tap_to_retry">Нажмите для повторной попытки</string>
-    <string name="warning_invalid_data">Данные вне допустимого диапазона</string>
+    <string name="warning_invalid_data">⚠️ Данные вне допустимого диапазона</string>
     <string name="error_no_network">Нет подключения к интернету</string>
     <string name="error_connection">Нет соединения с сервером</string>
     

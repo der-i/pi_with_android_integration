@@ -13,4 +13,12 @@
     <color name="status_connecting">#FFFFC107</color>
     <color name="status_disconnected">#FF9E9E9E</color>
     <color name="status_error">#FFF44336</color>
+
+    <!-- Sensor card colors -->
+    <color name="temperature_primary">#FFE53935</color>
+    <color name="temperature_light">#FFFFEBEE</color>
+    <color name="humidity_primary">#FF1E88E5</color>
+    <color name="humidity_light">#FFE3F2FD</color>
+    <color name="card_background">#FFFFFFFF</color>
+    <color name="card_background_light">#FFF5F5F5</color>
 </resources>

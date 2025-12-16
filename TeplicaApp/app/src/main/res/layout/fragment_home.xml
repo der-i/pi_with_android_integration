@@ -18,10 +18,17 @@
             android:id="@+id/text_connection_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:background="@drawable/status_background"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Подключено"
+            tools:text="ПОДКЛЮЧЕНО"
             tools:textColor="@color/status_connected" />
 
         <!-- Карточка температуры -->
@@ -31,8 +38,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/temperature_light"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
+            app:strokeWidth="0dp"
             app:layout_constraintEnd_toStartOf="@id/card_humidity"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_connection_status">
@@ -42,23 +51,33 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="28dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🌡️"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="4dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_temperature"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="16sp" />
+                    android:textColor="@color/temperature_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05" />
 
                 <TextView
                     android:id="@+id/text_temperature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textColor="@color/purple_500"
-                    android:textSize="36sp"
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/temperature_primary"
+                    android:textSize="40sp"
                     android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
                     tools:text="23.5°C" />
 
             </LinearLayout>
@@ -72,8 +91,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/humidity_light"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
+            app:strokeWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/card_temperature"
             app:layout_constraintTop_toBottomOf="@id/text_connection_status">
@@ -83,23 +104,33 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="28dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💧"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="4dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_humidity"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="16sp" />
+                    android:textColor="@color/humidity_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05" />
 
                 <TextView
                     android:id="@+id/text_humidity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textColor="@color/teal_700"
-                    android:textSize="36sp"
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/humidity_primary"
+                    android:textSize="40sp"
                     android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
                     tools:text="65.2%" />
 
             </LinearLayout>
@@ -111,9 +142,11 @@
             android:id="@+id/text_last_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="20dp"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="14sp"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-light"
+            android:alpha="0.8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_temperature"
@@ -125,13 +158,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@drawable/warning_background"
             android:textColor="@color/status_error"
-            android:textSize="14sp"
+            android:textSize="13sp"
+            android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_last_update"
-            tools:text="Данные вне допустимого диапазона"
+            tools:text="⚠️ Данные вне допустимого диапазона"
             tools:visibility="visible" />
 
         <!-- Сообщение об ошибке -->
