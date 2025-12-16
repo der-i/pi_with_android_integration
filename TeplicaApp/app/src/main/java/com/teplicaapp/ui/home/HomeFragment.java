@@ -161,6 +161,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void showData(SensorData data) {
+        // Принудительно останавливаем индикатор загрузки
+        binding.swipeRefresh.setRefreshing(false);
+
         // Анимация обновления данных
         Animation pulseAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.pulse);
 
