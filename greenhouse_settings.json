@@ -1,0 +1,7 @@
+{
+    "temp_min": 18.0,
+    "temp_max": 28.0,
+    "humidity_min": 40.0,
+    "humidity_max": 70.0,
+    "window_auto_control": true
+}
