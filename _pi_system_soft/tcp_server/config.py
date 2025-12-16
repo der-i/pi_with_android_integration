@@ -4,7 +4,7 @@
 
 class Config:
     # Режим работы датчика: 'real' или 'simulated'
-    SENSOR_MODE = 'simulated'  # Переключите на 'real' для работы с настоящим датчиком
+    SENSOR_MODE = 'simulated'
 
     # Flask сервер
     HOST = '0.0.0.0'
