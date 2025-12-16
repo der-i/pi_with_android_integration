@@ -77,8 +77,11 @@ def get_data():
     }
     """
     try:
+        print("[DEBUG] /data endpoint called")
         # Чтение данных с датчика
+        print("[DEBUG] Reading sensor data...")
         temperature, humidity = sensor_reader.read_data()
+        print(f"[DEBUG] Got sensor data: T={temperature}, H={humidity}")
 
         if temperature is not None and humidity is not None:
             timestamp = int(time.time())
@@ -88,9 +91,12 @@ def get_data():
             last_sensor_data['humidity'] = humidity
             last_sensor_data['timestamp'] = timestamp
 
+            print("[DEBUG] Checking thresholds...")
             # Проверка пороговых значений
             threshold_status = settings_manager.check_thresholds(temperature, humidity)
+            print(f"[DEBUG] Threshold status: {threshold_status}")
 
+            print("[DEBUG] Processing window control...")
             # Автоматическое управление окном
             if settings_manager.is_auto_control_enabled():
                 window_result = window_controller.process_sensor_data(

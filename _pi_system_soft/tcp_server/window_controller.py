@@ -122,11 +122,12 @@ class WindowController:
                 print(f"[ОКНО] 🔒 Окно ЗАКРЫТО: {', '.join(reasons)}")
 
             elif not threshold_status['action_needed']:
-                print(f"[ОКНО] ✅ Параметры в норме (T={temperature}°C, H={humidity}%), состояние: {self.get_state()}")
+                current_state_str = "open" if self.is_open else "closed"
+                print(f"[ОКНО] ✅ Параметры в норме (T={temperature}°C, H={humidity}%), состояние: {current_state_str}")
 
             return {
                 'action_taken': action_taken,
-                'current_state': self.get_state(),
+                'current_state': "open" if self.is_open else "closed",
                 'reasons': threshold_status
             }
 
