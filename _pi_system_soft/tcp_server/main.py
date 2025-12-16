@@ -14,6 +14,7 @@ from config import Config
 from sensor_reader import get_sensor_reader
 from settings_manager import SettingsManager
 from window_controller import WindowController
+from database import Database
 
 
 # Инициализация Flask приложения
@@ -41,6 +42,7 @@ def setup_logging():
 sensor_reader = get_sensor_reader()
 settings_manager = SettingsManager()
 window_controller = WindowController()
+database = Database()
 
 # Последние данные (кэш)
 last_sensor_data = {
@@ -107,6 +109,9 @@ def get_data():
 
             # Получение текущих настроек
             current_settings = settings_manager.get_settings()
+
+            # Сохраняем данные в базу
+            database.add_reading(temperature, humidity, window_result['current_state'])
 
             response = {
                 "temperature": temperature,
@@ -332,6 +337,178 @@ def health_check():
     return jsonify({"status": "healthy"}), 200
 
 
+@app.route('/history', methods=['GET'])
+def get_history():
+    """
+    GET /history?hours=24&limit=1000
+    Получить историю показаний датчика.
+
+    Query параметры:
+    - hours: период в часах (по умолчанию 24)
+    - limit: максимальное количество записей (опционально)
+
+    Ответ:
+    {
+        "success": true,
+        "count": int,
+        "period_hours": int,
+        "data": [
+            {
+                "timestamp": int,
+                "temperature": float,
+                "humidity": float,
+                "window_state": string
+            },
+            ...
+        ]
+    }
+    """
+    try:
+        # Получаем параметры из query string
+        hours = request.args.get('hours', default=24, type=int)
+        limit = request.args.get('limit', default=None, type=int)
+
+        # Ограничиваем максимальный период
+        if hours > 8760:  # 1 год
+            hours = 8760
+
+        # Получаем историю из базы
+        history = database.get_history(hours=hours, limit=limit)
+
+        return jsonify({
+            "success": True,
+            "count": len(history),
+            "period_hours": hours,
+            "data": history
+        }), 200
+
+    except Exception as e:
+        app.logger.error(f"Ошибка в /history: {str(e)}")
+        return jsonify({
+            "error": "Internal server error",
+            "message": str(e)
+        }), 500
+
+
+@app.route('/history/aggregated', methods=['GET'])
+def get_aggregated_history():
+    """
+    GET /history/aggregated?hours=168&interval=60
+    Получить агрегированную (усредненную) историю.
+    Полезно для длительных периодов.
+
+    Query параметры:
+    - hours: период в часах (по умолчанию 168 = неделя)
+    - interval: интервал агрегации в минутах (по умолчанию 60)
+
+    Ответ:
+    {
+        "success": true,
+        "count": int,
+        "period_hours": int,
+        "interval_minutes": int,
+        "data": [
+            {
+                "timestamp": int,
+                "temperature": float,
+                "humidity": float,
+                "temp_min": float,
+                "temp_max": float,
+                "humidity_min": float,
+                "humidity_max": float,
+                "samples": int
+            },
+            ...
+        ]
+    }
+    """
+    try:
+        # Получаем параметры
+        hours = request.args.get('hours', default=168, type=int)
+        interval = request.args.get('interval', default=60, type=int)
+
+        # Ограничения
+        if hours > 8760:
+            hours = 8760
+        if interval < 1:
+            interval = 1
+        if interval > 1440:  # не больше суток
+            interval = 1440
+
+        # Получаем агрегированную историю
+        history = database.get_aggregated_history(hours=hours, interval_minutes=interval)
+
+        return jsonify({
+            "success": True,
+            "count": len(history),
+            "period_hours": hours,
+            "interval_minutes": interval,
+            "data": history
+        }), 200
+
+    except Exception as e:
+        app.logger.error(f"Ошибка в /history/aggregated: {str(e)}")
+        return jsonify({
+            "error": "Internal server error",
+            "message": str(e)
+        }), 500
+
+
+@app.route('/history/statistics', methods=['GET'])
+def get_history_statistics():
+    """
+    GET /history/statistics?hours=24
+    Получить статистику за период.
+
+    Query параметры:
+    - hours: период в часах (по умолчанию 24)
+
+    Ответ:
+    {
+        "success": true,
+        "statistics": {
+            "period_hours": int,
+            "total_readings": int,
+            "temperature": {
+                "avg": float,
+                "min": float,
+                "max": float
+            },
+            "humidity": {
+                "avg": float,
+                "min": float,
+                "max": float
+            }
+        }
+    }
+    """
+    try:
+        hours = request.args.get('hours', default=24, type=int)
+
+        if hours > 8760:
+            hours = 8760
+
+        stats = database.get_statistics(hours=hours)
+
+        if stats:
+            return jsonify({
+                "success": True,
+                "statistics": stats
+            }), 200
+        else:
+            return jsonify({
+                "success": False,
+                "message": "Нет данных за указанный период"
+            }), 404
+
+    except Exception as e:
+        app.logger.error(f"Ошибка в /history/statistics: {str(e)}")
+        return jsonify({
+            "error": "Internal server error",
+            "message": str(e)
+        }), 500
+
+
 @app.errorhandler(404)
 def not_found(error):
     """Обработчик 404 ошибки"""
@@ -360,15 +537,19 @@ if __name__ == '__main__':
     print("=" * 60)
     print(f"Режим работы датчика: {Config.SENSOR_MODE.upper()}")
     print(f"Сервер запущен на: http://{Config.HOST}:{Config.PORT}")
-    print(f"Доступные эндпоинты:")
-    print(f"  GET  /data              - Получить данные датчика")
-    print(f"  GET  /settings          - Получить настройки")
-    print(f"  POST /settings          - Обновить настройки")
-    print(f"  GET  /window            - Состояние окна")
-    print(f"  POST /window/open       - Открыть окно")
-    print(f"  POST /window/close      - Закрыть окно")
-    print(f"  GET  /status            - Общий статус системы")
-    print(f"  GET  /health            - Health check")
+    print(f"База данных: {database.db_path}")
+    print(f"\nДоступные эндпоинты:")
+    print(f"  GET  /data                    - Получить данные датчика")
+    print(f"  GET  /settings                - Получить настройки")
+    print(f"  POST /settings                - Обновить настройки")
+    print(f"  GET  /window                  - Состояние окна")
+    print(f"  POST /window/open             - Открыть окно")
+    print(f"  POST /window/close            - Закрыть окно")
+    print(f"  GET  /status                  - Общий статус системы")
+    print(f"  GET  /health                  - Health check")
+    print(f"  GET  /history                 - История показаний")
+    print(f"  GET  /history/aggregated      - Агрегированная история")
+    print(f"  GET  /history/statistics      - Статистика за период")
     print("=" * 60)
     print()
 

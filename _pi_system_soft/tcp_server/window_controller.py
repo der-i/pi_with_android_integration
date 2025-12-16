@@ -107,7 +107,7 @@ class WindowController:
                     reasons.append(f"температура {temperature}°C выше порога")
                 if threshold_status['humidity_too_high']:
                     reasons.append(f"влажность {humidity}% выше порога")
-                print(f"[ОКНО] 🔓 Окно ОТКРЫТО: {', '.join(reasons)}")
+                print(f"[ОКНО] Окно ОТКРЫТО: {', '.join(reasons)}")
 
             elif should_close and self.is_open:
                 if self.gpio_available:
@@ -119,11 +119,11 @@ class WindowController:
                     reasons.append(f"температура {temperature}°C ниже порога")
                 if threshold_status['humidity_too_low']:
                     reasons.append(f"влажность {humidity}% ниже порога")
-                print(f"[ОКНО] 🔒 Окно ЗАКРЫТО: {', '.join(reasons)}")
+                print(f"[ОКНО] Окно ЗАКРЫТО: {', '.join(reasons)}")
 
             elif not threshold_status['action_needed']:
                 current_state_str = "open" if self.is_open else "closed"
-                print(f"[ОКНО] ✅ Параметры в норме (T={temperature}°C, H={humidity}%), состояние: {current_state_str}")
+                print(f"[ОКНО] Параметры в норме (T={temperature}°C, H={humidity}%), состояние: {current_state_str}")
 
             return {
                 'action_taken': action_taken,
