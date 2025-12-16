@@ -176,11 +176,18 @@ public class HomeFragment extends Fragment {
 
     private void showError(String message) {
         binding.textError.setVisibility(View.VISIBLE);
-        binding.textError.setText(message);
+        String fullMessage = message + "\n" + getString(R.string.hint_tap_to_retry);
+        binding.textError.setText(fullMessage);
+
+        // Добавляем возможность повторить запрос по клику на сообщение об ошибке
+        binding.textError.setOnClickListener(v -> {
+            viewModel.refreshData();
+        });
     }
 
     private void hideError() {
         binding.textError.setVisibility(View.GONE);
+        binding.textError.setOnClickListener(null);
     }
 
     private void updateConnectionStatus(ConnectionStatus status) {

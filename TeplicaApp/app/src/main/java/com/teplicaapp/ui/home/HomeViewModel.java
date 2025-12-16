@@ -15,6 +15,7 @@ import com.teplicaapp.data.model.ConnectionStatus;
 import com.teplicaapp.data.model.Resource;
 import com.teplicaapp.data.model.SensorData;
 import com.teplicaapp.data.repository.SensorRepository;
+import com.teplicaapp.util.NetworkUtils;
 
 /**
  * ViewModel для главного экрана с показаниями датчика.
@@ -94,13 +95,22 @@ public class HomeViewModel extends AndroidViewModel {
      * Запросить свежие данные с сервера
      */
     public void refreshData() {
+        // Проверяем наличие интернет-соединения
+        if (!NetworkUtils.isNetworkAvailable(getApplication())) {
+            sensorData.setValue(Resource.error(
+                    "Нет подключения к интернету",
+                    repository.getCachedData()));
+            connectionStatus.setValue(ConnectionStatus.DISCONNECTED);
+            return;
+        }
+
         connectionStatus.setValue(ConnectionStatus.CONNECTING);
-        
+
         LiveData<Resource<SensorData>> source = repository.fetchSensorData();
         sensorData.addSource(source, resource -> {
             sensorData.setValue(resource);
             sensorData.removeSource(source);
-            
+
             if (resource.isSuccess()) {
                 connectionStatus.setValue(ConnectionStatus.CONNECTED);
             } else if (resource.isError()) {
