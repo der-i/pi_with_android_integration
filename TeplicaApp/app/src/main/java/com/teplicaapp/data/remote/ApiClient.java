@@ -9,11 +9,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Singleton Retrofit клиент для подключения к Raspberry Pi.
- * По умолчанию ищет сервер на 192.168.1.100:5000
+ * По умолчанию ищет сервер на 192.168.3.8:5000
  */
 public class ApiClient {
     
-    private static final String DEFAULT_BASE_URL = "http://192.168.1.100:5000/";
+    private static final String DEFAULT_BASE_URL = "http://192.168.3.8:5000/";
     private static final int CONNECT_TIMEOUT_SECONDS = 10;
     private static final int READ_TIMEOUT_SECONDS = 10;
     
