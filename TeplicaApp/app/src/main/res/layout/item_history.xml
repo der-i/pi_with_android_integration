@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Время -->
+        <TextView
+            android:id="@+id/text_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="14:30" />
+
+        <!-- Иконка температуры -->
+        <TextView
+            android:id="@+id/icon_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🌡️"
+            android:textSize="20sp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_time" />
+
+        <!-- Температура -->
+        <TextView
+            android:id="@+id/text_temperature"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="16sp"
+            android:textColor="@color/temperature_primary"
+            app:layout_constraintStart_toEndOf="@id/icon_temperature"
+            app:layout_constraintTop_toTopOf="@id/icon_temperature"
+            app:layout_constraintBottom_toBottomOf="@id/icon_temperature"
+            app:layout_constraintEnd_toStartOf="@id/icon_humidity"
+            tools:text="23.5°C" />
+
+        <!-- Иконка влажности -->
+        <TextView
+            android:id="@+id/icon_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="💧"
+            android:textSize="20sp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/text_temperature"
+            app:layout_constraintTop_toTopOf="@id/icon_temperature" />
+
+        <!-- Влажность -->
+        <TextView
+            android:id="@+id/text_humidity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="16sp"
+            android:textColor="@color/humidity_primary"
+            app:layout_constraintStart_toEndOf="@id/icon_humidity"
+            app:layout_constraintTop_toTopOf="@id/icon_humidity"
+            app:layout_constraintBottom_toBottomOf="@id/icon_humidity"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="65.2%" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
