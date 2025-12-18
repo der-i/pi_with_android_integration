@@ -3,6 +3,7 @@ package com.teplicaapp.ui.home;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -15,36 +16,41 @@ import com.teplicaapp.data.model.ConnectionStatus;
 import com.teplicaapp.data.model.Resource;
 import com.teplicaapp.data.model.SensorData;
 import com.teplicaapp.data.repository.SensorRepository;
+import com.teplicaapp.service.NotificationService;
 import com.teplicaapp.util.NetworkUtils;
 
 /**
  * ViewModel для главного экрана с показаниями датчика.
  */
 public class HomeViewModel extends AndroidViewModel {
-    
+
+    private static final String TAG = "HomeViewModel";
+
     private final SensorRepository repository;
     private final AppPreferences preferences;
+    private final NotificationService notificationService;
     private final MediatorLiveData<Resource<SensorData>> sensorData;
     private final MutableLiveData<ConnectionStatus> connectionStatus;
     private final MutableLiveData<Boolean> isAutoRefreshEnabled;
     private final MutableLiveData<Long> refreshInterval;
-    
+
     private final Handler refreshHandler;
     private Runnable refreshRunnable;
     
     public HomeViewModel(@NonNull Application application) {
         super(application);
-        
+
         repository = SensorRepository.getInstance();
         preferences = AppPreferences.getInstance(application);
-        
+        notificationService = NotificationService.getInstance(application);
+
         sensorData = new MediatorLiveData<>();
         connectionStatus = new MutableLiveData<>(ConnectionStatus.DISCONNECTED);
         isAutoRefreshEnabled = new MutableLiveData<>(preferences.isAutoRefreshEnabled());
         refreshInterval = new MutableLiveData<>(preferences.getRefreshInterval());
-        
+
         refreshHandler = new Handler(Looper.getMainLooper());
-        
+
         setupRefreshRunnable();
     }
     
@@ -113,8 +119,18 @@ public class HomeViewModel extends AndroidViewModel {
 
             if (resource.isSuccess()) {
                 connectionStatus.setValue(ConnectionStatus.CONNECTED);
+                // Проверка критических значений для уведомлений
+                if (resource.getData() != null) {
+                    SensorData data = resource.getData();
+                    Log.d(TAG, "Checking sensor data for notifications: temp=" +
+                            data.getTemperature() + ", humidity=" + data.getHumidity());
+                    notificationService.checkSensorData(data);
+                } else {
+                    Log.w(TAG, "Sensor data is null, cannot check notifications");
+                }
             } else if (resource.isError()) {
                 connectionStatus.setValue(ConnectionStatus.ERROR);
+                Log.e(TAG, "Error fetching sensor data: " + resource.getMessage());
             }
         });
     }

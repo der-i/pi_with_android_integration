@@ -29,4 +29,34 @@
     <!-- Dialogs -->
     <string name="dialog_interval_title">Выберите интервал</string>
     <string name="cancel">Отмена</string>
+
+    <!-- Settings screen -->
+    <string name="menu_settings">Настройки</string>
+    <string name="settings_temperature_thresholds">Пороговые значения температуры</string>
+    <string name="settings_temp_min">Минимальная температура</string>
+    <string name="settings_temp_max">Максимальная температура</string>
+    <string name="settings_humidity_thresholds">Пороговые значения влажности</string>
+    <string name="settings_humidity_min">Минимальная влажность</string>
+    <string name="settings_humidity_max">Максимальная влажность</string>
+    <string name="settings_min_value">Минимум</string>
+    <string name="settings_max_value">Максимум</string>
+    <string name="settings_refresh_settings">Настройки обновления</string>
+    <string name="settings_auto_refresh">Автообновление</string>
+    <string name="settings_refresh_interval">Интервал обновления</string>
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_enable_notifications">Включить уведомления</string>
+    <string name="settings_notifications_description">Уведомления при выходе показаний за пределы нормы</string>
+    <string name="settings_save">Сохранить</string>
+    <string name="settings_saved">Настройки сохранены</string>
+    <string name="settings_error_invalid_range">Минимальное значение должно быть меньше максимального</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Критические значения</string>
+    <string name="notification_channel_description">Уведомления при критических значениях температуры и влажности</string>
+    <string name="notification_title_temperature">Температура вне нормы</string>
+    <string name="notification_title_humidity">Влажность вне нормы</string>
+    <string name="notification_temp_low">Температура слишком низкая: %.1f°C (норма: %.1f-%.1f°C)</string>
+    <string name="notification_temp_high">Температура слишком высокая: %.1f°C (норма: %.1f-%.1f°C)</string>
+    <string name="notification_humidity_low">Влажность слишком низкая: %.1f%% (норма: %.1f-%.1f%%)</string>
+    <string name="notification_humidity_high">Влажность слишком высокая: %.1f%% (норма: %.1f-%.1f%%)</string>
 </resources>

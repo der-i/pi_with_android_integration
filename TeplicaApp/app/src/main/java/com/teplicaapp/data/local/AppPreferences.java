@@ -13,9 +13,18 @@ public class AppPreferences {
     private static final String KEY_SERVER_URL = "server_url";
     private static final String KEY_REFRESH_INTERVAL = "refresh_interval";
     private static final String KEY_AUTO_REFRESH_ENABLED = "auto_refresh_enabled";
-    
+    private static final String KEY_TEMP_MIN = "temp_min";
+    private static final String KEY_TEMP_MAX = "temp_max";
+    private static final String KEY_HUMIDITY_MIN = "humidity_min";
+    private static final String KEY_HUMIDITY_MAX = "humidity_max";
+    private static final String KEY_NOTIFICATIONS_ENABLED = "notifications_enabled";
+
     private static final String DEFAULT_SERVER_URL = "http://192.168.1.100:5000";
     private static final long DEFAULT_REFRESH_INTERVAL = 5000L; // 5 секунд
+    private static final float DEFAULT_TEMP_MIN = 18.0f;
+    private static final float DEFAULT_TEMP_MAX = 28.0f;
+    private static final float DEFAULT_HUMIDITY_MIN = 40.0f;
+    private static final float DEFAULT_HUMIDITY_MAX = 70.0f;
     
     private final SharedPreferences prefs;
     
@@ -101,5 +110,62 @@ public class AppPreferences {
             }
         }
         return 1; // default: 5 сек
+    }
+
+    // Temperature thresholds
+
+    public float getTempMin() {
+        return prefs.getFloat(KEY_TEMP_MIN, DEFAULT_TEMP_MIN);
+    }
+
+    public void setTempMin(float temp) {
+        prefs.edit().putFloat(KEY_TEMP_MIN, temp).apply();
+    }
+
+    public float getTempMax() {
+        return prefs.getFloat(KEY_TEMP_MAX, DEFAULT_TEMP_MAX);
+    }
+
+    public void setTempMax(float temp) {
+        prefs.edit().putFloat(KEY_TEMP_MAX, temp).apply();
+    }
+
+    // Humidity thresholds
+
+    public float getHumidityMin() {
+        return prefs.getFloat(KEY_HUMIDITY_MIN, DEFAULT_HUMIDITY_MIN);
+    }
+
+    public void setHumidityMin(float humidity) {
+        prefs.edit().putFloat(KEY_HUMIDITY_MIN, humidity).apply();
+    }
+
+    public float getHumidityMax() {
+        return prefs.getFloat(KEY_HUMIDITY_MAX, DEFAULT_HUMIDITY_MAX);
+    }
+
+    public void setHumidityMax(float humidity) {
+        prefs.edit().putFloat(KEY_HUMIDITY_MAX, humidity).apply();
+    }
+
+    // Notifications
+
+    public boolean isNotificationsEnabled() {
+        return prefs.getBoolean(KEY_NOTIFICATIONS_ENABLED, true);
+    }
+
+    public void setNotificationsEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_NOTIFICATIONS_ENABLED, enabled).apply();
+    }
+
+    /**
+     * Проверка, находятся ли значения в пределах нормы
+     */
+    public boolean isTemperatureInRange(float temperature) {
+        return temperature >= getTempMin() && temperature <= getTempMax();
+    }
+
+    public boolean isHumidityInRange(float humidity) {
+        return humidity >= getHumidityMin() && humidity <= getHumidityMax();
     }
 }
